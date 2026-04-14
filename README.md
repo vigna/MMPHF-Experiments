@@ -1,79 +1,68 @@
-# MMPHF-Experiments
+# MMPHF-Experiments, Revisited
 
-A monotone minimal perfect hash function (MMPHF) maps a set S of n input keys to the first n integers without collisions. At the same time, it respects the natural order of the input universe. In other words, it maps each input key to its rank. MMPHFs have many applications in databases and space-efficient data structures.
+This repository is a fork of the [original MMPHF-Experiments
+repository](https://github.com/ByteHamster/MMPHF-Experiments) for the paper
+“[Learned Monotone Minimal Perfect
+Hashing](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ESA.2023.46)“.
+It contains updated code, including Rust implementation of the LCP-based
+functions and a fix to the Java experiments. If you're looking for advice on the
+choice of a MMPHF, the results in the paper are somewhat misleading for two main
+reasons:
 
-<img src="plots.png" width="500"/>
+- An “apples-and-orangres“ problem: the experiments tested a wired implementation
+  for integer or sequence of bytes of LeMonHash against Java code designed to turn
+  any object in a bit vector _via_ a runtime-specified transformation strategy, and
+  then process it. This level of genericity has a high cost not shared by the C++
+  implementations.
 
-The framework provides a unified interface to test basically all modern MPHF constructions that are currently available, including:
+- C++ vs. Java for this type of data structures implies at least a 2x slowdown.
 
-- LeMonHash / LeMonHash-VL ([Paper](https://doi.org/10.4230/LIPIcs.ESA.2023.46), [Code](https://github.com/ByteHamster/LeMonHash))
-- Path Decomposed Trie ([Paper](https://doi.org/10.1145/2656332), [Code](https://github.com/ot/path_decomposed_tries))
-- Longest Common Prefix Bucketing ([Paper](https://doi.org/10.1145/1963190.2025378), [Java Code](https://github.com/vigna/Sux4J), [Rust Code](https://github.com/vigna/sux-rs))
-- Longest Common Prefix Bucketing with 2-step static function ([Paper](https://doi.org/10.1145/1963190.2025378), [Java Code](https://github.com/vigna/Sux4J), [Rust Code](https://github.com/vigna/sux-rs))
-- Variable Length Longest Common Prefix Bucketing ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
-- Partial Compacted Trie ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
-- Variable Length Partial Compacted Trie ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
-- Centroid Hollow Trie ([Paper](https://doi.org/10.1145/2656332), [Code](https://github.com/ot/path_decomposed_tries))
-- Hollow Trie Distributor ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
-- Hollow Trie (Java) ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
-- Hollow Trie (C++) ([Paper](https://doi.org/10.1145/2656332), [Code](https://github.com/ot/path_decomposed_tries))
-- ZFast Trie ([Paper](https://doi.org/10.1145/1963190.2025378), [Code](https://github.com/vigna/Sux4J))
+- In an honest mistake, the authors used a UTF-16 transformation strategy that
+  doubled the length of all ASCII strings passed to the Java data structures,
+  squaring the size of the underlying universe. For a 10-bytes key passed to
+  C++ structures, Java would get a 20-byte key. This impacted both the size and
+  the speed of the Java implementations.
 
+Here we try to give a more balanced set of results:
 
-## Reproducing Experiments
+- The LCP-based MMPHFs are now available in the Rust
+  [`sux`](https://crates.io/crates/sux) crate, providing, at least for those
+  types of MMPHF, a way out of the “apples-and-oranges“ problem.
 
-This repository contains the source code and our reproducibility artifacts for comparing different MMPHF constructions.
-We recommend running the evaluation directly for benchmarking purposes.
-For this, have a look at `scripts/runExperiments.sh`.
-You can also look at the `Dockerfile` to see all libraries, tools, and commands necessary to compile and run the experiments directly.
+- We modified the test so that the Java code would use the cheapest available
+  transformation strategy, which simply maps the input to byte arrays. This is
+  the same setup used in the paper “[Theory and Practice of Monotone Minimal Perfect
+  Hashing](https://doi.org/10.1145/1963190.2025378)“ that introduced them.
 
-However, we also provide an easy to use Docker image to quickly reproduce our results.
+- From the results of the paper, a scaling problem was already rather evident at
+  larger key sizes. We added a test on 1B URLs showing clear nonconstant behavior:
+  on 100M URLs LeMonHash is 4 times slower than an LCP-based MMPHF, but at 1B is
+  11 times slower.
 
-#### Cloning the Repository
+The picture one gets from the new experiments is that LeMonHash is probably the
+best contender in the “high-compression, slow queries“ corner of the design
+space. It certainly is for integer keys. If speed is essential, however,
+LCP-based solution use more space but are an order of magnitude faster, and it
+is likely the situation is only gonna improve on larger datasets. Given the
+indexing nature of these structure (they usually map to some other ancillary
+data), the space saving of increased compression is often not worth the
+slowdown, but this must be checked on a case-by-case basis.
 
-This repository contains submodules.
-To clone the repository including submodules, use the following command.
+A lesson learned from this experience is that the experiments in “[Theory and
+Practice of Monotone Minimal Perfect
+Hashing](https://doi.org/10.1145/1963190.2025378)“ flattened down the
+differences between different structures much more than we thought at that time.
+The complete genericity was necessary to develop all the structures in a reasonable
+amount of time, but the resulting view of the design space hid some relevant
+difference in speed.
 
-```
-git clone --recursive https://github.com/ByteHamster/MMPHF-Experiments.git
-```
-
-#### Building the Docker Image
-
-Run the following command to build the Docker image.
-Building the image takes about 10 minutes, as some packages (including LaTeX for the plots) have to be installed.
-
-```bash
-docker build -t mmphf_experiments --no-cache .
-```
-
-Some compiler warnings (red) are expected when building dependencies and will not prevent building the image or running the experiments.
-Please ignore them!
-
-#### Running the Experiments
-Due to the long total running time of all experiments in our paper, we provide a run script for a highly simplified version of the experiments.
-Most importantly, we use a small, synthetic dataset (also due to licensing and download size).
-
-You can modify the benchmark scripts in `scripts/dockerVolume` if you want to change any parameters.
-This does not require the Docker image to recompile.
-The experiments can be started by using the following command:
-
-```bash
-docker run --interactive --tty -v "$(pwd)/scripts/dockerVolume:/opt/dockerVolume" mmphf_experiments <filename>
-```
-
-Several experiments files are available:
-
-| Input Distribution | Launch command                                |
-|:-------------------| :-------------------------------------------- |
-| Normal             | /opt/dockerVolume/normal-distribution.sh      |
-| Exponential        | /opt/dockerVolume/exponential-distribution.sh |
-| Uniform            | /opt/dockerVolume/uniform-distribution.sh     |
-
-For real world input data sets, run the benchmarks outside of Docker and have a look at `scripts/runExperiments.sh`.
-The resulting plots can be found in `scripts/dockerVolume` and have the file extension `.pdf`.
-
-### License
-
-The benchmark code is licensed under the [GPLv3](/LICENSE).
-The competitors (in the `cpp/extlib`, `java/extlib`, and `rust/` directories) are licensed with their respective licenses.
+![5GRAM_1](./svg/5GRAM_1.svg)
+![dna-31-mer.txt](./svg/dna-31-mer.txt.svg)
+![eu-2015.urls](./svg/eu-2015.urls.svg)
+![exponential_uint64](./svg/exponential_uint64.svg)
+![fb_200M_uint64](./svg/fb_200M_uint64.svg)
+![normal_uint64](./svg/normal_uint64.svg)
+![osm_cellids_800M_uint64](./svg/osm_cellids_800M_uint64.svg)
+![trec-text.terms](./svg/trec-text.terms.svg)
+![uk-2007-05.urls](./svg/uk-2007-05.urls.svg)
+![uniform_uint64](./svg/uniform_uint64.svg)
