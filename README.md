@@ -23,7 +23,8 @@ main reasons:
   C++ structures, Java would get a 20-byte key. This impacted both the size and
   the speed of the Java implementations as they had to manage twice the data.
 
-Here we try to give a more balanced set of results:
+Here we provide more accurate results in the graphs below using the same
+machinery:
 
 - The LCP-based MMPHFs are now available in the Rust
   [`sux`](https://crates.io/crates/sux) crate, providing, at least for those
@@ -45,12 +46,11 @@ Here we try to give a more balanced set of results:
 
 The picture one gets from the new experiments is that LeMonHash is probably the
 best contender in the “high-compression, slow queries” corner of the design
-space. It certainly is for integer keys. If speed is essential, however,
-LCP-based solutions use more space but are an order of magnitude faster, and the
-gap is likely to widen on larger datasets. Given the indexing nature of these
-structures (they usually map to some other ancillary data), the extra
-compression rarely justifies the slowdown, but this must be checked on a
-case-by-case basis.
+space. It certainly is for integer keys. It unclear whether this property
+will scale to large datasets, given the performance on the 1B-URL dataset.
+
+If speed is essential, however, LCP-based solutions use more space but are an
+order of magnitude faster, and the gap is likely to widen on larger datasets.
 
 In retrospect, the framework of “[Theory and Practice of Monotone Minimal
 Perfect Hashing](https://doi.org/10.1145/1963190.2025378)” flattened real speed
