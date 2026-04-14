@@ -29,10 +29,13 @@ Here we try to give a more balanced set of results:
   [`sux`](https://crates.io/crates/sux) crate, providing, at least for those
   types of MMPHF, a way out of the “apples-and-oranges” problem.
 
-- We modified the test so that the Java code would use the cheapest available
-  transformation strategy, which simply maps the input to byte arrays. This is
-  the same setup used in the paper “[Theory and Practice of Monotone Minimal Perfect
-  Hashing](https://doi.org/10.1145/1963190.2025378)” that introduced them.
+- We modified the benchmarks so that the Java code would use the cheapest
+  available transformation strategy, which simply maps the input to byte arrays.
+  This is the same setup used in the paper “[Theory and Practice of Monotone
+  Minimal Perfect Hashing](https://doi.org/10.1145/1963190.2025378)” that
+  introduced them, and it equivalent to the C++ processing. There is nothing
+  similar to be done for integer keys, unfortunately—that would require writing
+  hardwired implementations.
 
 - From the results of the paper, a scaling problem was already rather evident at
   larger key sizes. We added a test on [1B
