@@ -56,13 +56,13 @@ The complete genericity was necessary to develop all the structures in a reasona
 amount of time, but the resulting view of the design space hid some relevant
 difference in speed.
 
-![eu-2015.urls](./png/eu-2015.urls.png)
-![trec-text.terms](./png/trec-text.terms.png)
-![dna-31-mer.txt](./png/dna-31-mer.txt.png)
-![uk-2007-05.urls](./png/uk-2007-05.urls.png)
-![5GRAM_1](./png/5GRAM_1.png)
-![fb_200M_uint64](./png/fb_200M_uint64.png)
-![osm_cellids_800M_uint64](./png/osm_cellids_800M_uint64.png)
-![uniform_uint64](./png/uniform_uint64.png)
-![normal_uint64](./png/normal_uint64.png)
-![exponential_uint64](./png/exponential_uint64.png)
+[![eu-2015.urls](./png/eu-2015.urls.png)](./pdf/eu-2015.urls.pdf)
+[![trec-text.terms](./png/trec-text.terms.png)](./pdf/trec-text.terms.pdf)
+[![dna-31-mer.txt](./png/dna-31-mer.txt.png)](./pdf/dna-31-mer.txt.pdf)
+[![uk-2007-05.urls](./png/uk-2007-05.urls.png)](./pdf/uk-2007-05.urls.pdf)
+[![5GRAM_1](./png/5GRAM_1.png)](./pdf/5GRAM_1.pdf)
+[![fb_200M_uint64](./png/fb_200M_uint64.png)](./pdf/fb_200M_uint64.pdf)
+[![osm_cellids_800M_uint64](./png/osm_cellids_800M_uint64.png)](./pdf/osm_cellids_800M_uint64.pdf)
+[![uniform_uint64](./png/uniform_uint64.png)](./pdf/uniform_uint64.pdf)
+[![normal_uint64](./png/normal_uint64.png)](./pdf/normal_uint64.pdf)
+[![exponential_uint64](./png/exponential_uint64.png)](./pdf/exponential_uint64.pdf)
