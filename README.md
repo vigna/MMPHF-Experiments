@@ -56,13 +56,13 @@ The complete genericity was necessary to develop all the structures in a reasona
 amount of time, but the resulting view of the design space hid some relevant
 difference in speed.
 
-![5GRAM_1](./png/5GRAM_1.png)
-![dna-31-mer.txt](./png/dna-31-mer.txt.png)
 ![eu-2015.urls](./png/eu-2015.urls.png)
-![exponential_uint64](./png/exponential_uint64.png)
-![fb_200M_uint64](./png/fb_200M_uint64.png)
-![normal_uint64](./png/normal_uint64.png)
-![osm_cellids_800M_uint64](./png/osm_cellids_800M_uint64.png)
 ![trec-text.terms](./png/trec-text.terms.png)
+![dna-31-mer.txt](./png/dna-31-mer.txt.png)
 ![uk-2007-05.urls](./png/uk-2007-05.urls.png)
+![5GRAM_1](./png/5GRAM_1.png)
+![fb_200M_uint64](./png/fb_200M_uint64.png)
+![osm_cellids_800M_uint64](./png/osm_cellids_800M_uint64.png)
 ![uniform_uint64](./png/uniform_uint64.png)
+![normal_uint64](./png/normal_uint64.png)
+![exponential_uint64](./png/exponential_uint64.png)
