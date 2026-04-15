@@ -58,6 +58,11 @@ differences between structures. Full genericity was necessary to implement all o
 them in a reasonable time, but it obscured constant factors that matter at
 scale.
 
+(Note: we removed the data for path-compressed tries as it was squeezing the
+graphs; the results for `eu-2015` were computed on different, larger
+hardware as LeMonHash has no streaming constructors so it needs all keys to be
+loaded into memory.)
+
 [![eu-2015.urls](./png/eu-2015.urls.png)](./pdf/eu-2015.urls.pdf)
 [![trec-text.terms](./png/trec-text.terms.png)](./pdf/trec-text.terms.pdf)
 [![dna-31-mer.txt](./png/dna-31-mer.txt.png)](./pdf/dna-31-mer.txt.pdf)
