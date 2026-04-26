@@ -6,7 +6,7 @@ repository](https://github.com/ByteHamster/MMPHF-Experiments) for the paper
 Hashing](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ESA.2023.46)”.
 It contains updated code, including Rust implementation of the LCP-based
 functions and a fix to the Java experiments. If you're looking for advice on the
-choice of a MMPHF, the results in the paper are somewhat misleading for three
+choice of a MMPHF, the results in the paper are misleading for three
 main reasons:
 
 - An “apples-and-oranges” problem: the experiments tested an implementation of
@@ -17,11 +17,12 @@ main reasons:
 
 - C++ vs. Java for these data structures implies at least a 2x slowdown.
 
-- Through an oversight, the authors used a UTF-16 transformation strategy that
-  doubled the length of all ASCII strings passed to the Java data structures,
-  squaring the size of the underlying universe. For a 10-byte key passed to
-  C++ structures, Java would get a 20-byte key. This impacted both the size and
-  the speed of the Java implementations as they had to manage twice the data.
+- The authors used a UTF-16 transformation strategy that doubled the
+  length of all ASCII strings passed to the Java data structures, squaring
+  the size of the underlying universe. For a 10-byte key passed to C++
+  structures, Java would get a 20-byte key. This impacted both the size
+  and the speed of the Java implementations as they had to manage twice
+  the data. The comparison was thus unfair.
 
 Here we provide more accurate results in the graphs below using the same
 machinery:
