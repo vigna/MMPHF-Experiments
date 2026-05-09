@@ -5,15 +5,16 @@ project(MMPHF-Experiments)
 if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     add_compile_options(-march=native)
 endif()
-# -O2: GCC 15 miscompiles LeMonHash/SimpleRibbon at -O3.
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "" FORCE)
-add_compile_options(-frecord-gcc-switches -Wno-template-body)
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG" CACHE STRING "" FORCE)
+# GCC 15 miscompiles LeMonHash/SimpleRibbon at -O3 without -fno-strict-aliasing
+add_compile_options(-frecord-gcc-switches -Wno-template-body -fno-strict-aliasing)
 
 ###################### Competitor setup ######################
 add_library(PerfectHashingCompetitors INTERFACE)
 target_compile_features(PerfectHashingCompetitors INTERFACE cxx_std_20)
 
 add_subdirectory(extlib/LeMonHash)
+# GCC 15 miscompiles LeMonHash/SimpleRibbon at -O3 without -fno-strict-aliasing
 target_compile_options(SimpleRibbon PRIVATE -fno-strict-aliasing)
 target_compile_options(RibbonSorter PRIVATE -fno-strict-aliasing)
 target_link_libraries(PerfectHashingCompetitors INTERFACE LeMonHash)
