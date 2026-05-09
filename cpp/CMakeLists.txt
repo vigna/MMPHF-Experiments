@@ -5,7 +5,9 @@ project(MMPHF-Experiments)
 if(CMAKE_BUILD_TYPE STREQUAL "Release" AND CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     add_compile_options(-march=native)
 endif()
-add_compile_options(-frecord-gcc-switches)
+# -O2: GCC 15 miscompiles LeMonHash/SimpleRibbon at -O3.
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG" CACHE STRING "" FORCE)
+add_compile_options(-frecord-gcc-switches -Wno-template-body)
 
 ###################### Competitor setup ######################
 add_library(PerfectHashingCompetitors INTERFACE)
