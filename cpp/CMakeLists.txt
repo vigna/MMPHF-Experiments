@@ -14,6 +14,8 @@ add_library(PerfectHashingCompetitors INTERFACE)
 target_compile_features(PerfectHashingCompetitors INTERFACE cxx_std_20)
 
 add_subdirectory(extlib/LeMonHash)
+target_compile_options(SimpleRibbon PRIVATE -fno-strict-aliasing)
+target_compile_options(RibbonSorter PRIVATE -fno-strict-aliasing)
 target_link_libraries(PerfectHashingCompetitors INTERFACE LeMonHash)
 
 # Doing it "properly" with add_subdirectory fails because both ds2i and path_decomposed_tries add the same submodule.
